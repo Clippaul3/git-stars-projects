@@ -26,6 +26,7 @@ class App extends Component {
                         <Link to={'/popular'} className={`navigate`}>Popular</Link>
                         <Link to={'/battle'} className={`navigate`}>Battle</Link>
                     </div>
+                    <Redirect to={'/popular'}/>
                     <Route path={'/popular'} component={Popular}/>
                     <Route path={'/battle'} component={Battle}/>
                     <Route path={'/result'} component={Result}/>
