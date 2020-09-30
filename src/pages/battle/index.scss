@@ -1,0 +1,79 @@
+.battle{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  &-title{
+    font-size: 25px;
+    font-weight: bold;
+  }
+  &-items{
+    display: flex;
+    align-items: center;
+  }
+  &-item{
+    margin: 10px 50px;
+    &-title{
+      text-align: center;
+      font-size: 25px;
+    }
+    &-icon{
+      background: whitesmoke;
+      padding: 30px;
+    }
+  }
+  .users-icon{
+    font-size: 120px;
+    color: rgb(255, 191, 116);
+  }
+  .jet-icon{
+    font-size: 120px;
+    color: gray;
+  }
+  .trophy-icon{
+    font-size: 120px;
+    color: gold;
+  }
+  &-input{
+    display: flex;
+    align-items: center;
+    &-player{
+      margin: 10px 60px;
+      &-area{
+        display: flex;
+        align-items: center;
+        padding: 20px 0;
+        .input-item{
+          margin-right: 20px;
+          padding: 8px 18px;
+          border-radius: 6px;
+        }
+      }
+    }
+    &-result{
+      display: flex;
+      align-items: center;
+      box-sizing: border-box;
+      width: 300px;
+      padding: 20px;
+      background: gray;
+      border-radius: 10px;
+      &-image{
+        width: 50px;
+        height: 50px;
+        margin-right: 15px;
+      }
+      &-name{
+        font-size: 25px;
+        flex-grow: 1;
+      }
+      &-clear{
+        font-size: 32px;
+        color: red;
+        width: 20px;
+        cursor: pointer;
+      }
+    }
+  }
+}
