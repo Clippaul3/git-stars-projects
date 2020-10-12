@@ -12,7 +12,8 @@ class Popular extends Component {
         projects: [],
         language: '',
         page: 1,
-        isLoading: true
+        isLoading: true,
+        isSwitching:false
     }
 
     componentDidMount() {
@@ -45,25 +46,31 @@ class Popular extends Component {
             ).then((res) => {
                 console.log(res.data.items)
                 if (page == 1) {
-                    this.setState({projects: res.data.items, isLoading: false})
+                    this.setState({projects: res.data.items, isLoading: false,isSwitching:false})
                 } else {
                     let moreProjects = this.state.projects.concat(res.data.items)
-                    this.setState({projects: moreProjects, isLoading: false})
+                    this.setState({projects: moreProjects, isLoading: false,isSwitching:false})
                 }
             })
         })
     }
 
     switchLanguage = (language) => {
-        this.setState({language, page: 1}, () => {
+        this.setState({language, page: 1,isSwitching:true}, () => {
             this.loadData()
         })
     }
 
     render() {
-        let {projects, language, isLoading} = this.state
+        let {projects, language, isLoading,isSwitching} = this.state
         return (
             <div className="git-stars" ref={'isReachBottom'}>
+                {
+                    isSwitching &&
+                    <div className={'switch-container'}>
+                        <Spin spinning={isLoading} size={"large"} tip={'加载中...'}/>
+                    </div>
+                }
                 <div className={'git-stars-languages'}>
                     <div className={`git-stars-languages-item ${language == '' && 'active'}`}
                          onClick={this.switchLanguage.bind(this, '')}>

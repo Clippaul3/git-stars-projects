@@ -1,6 +1,9 @@
 @import '~antd/dist/antd.css';
 .links{
-  padding: 20px 40px;
+  padding: 20px 0;
+  width: 1200px;
+  max-width: 100%;
+  margin: 0 auto;
   .navigate{
     margin-right: 30px;
   }

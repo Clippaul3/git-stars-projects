@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './index.scss';
 import axios from 'axios'
-import {Spin, Alert, Input} from 'antd'
+import {Spin, Alert, Input,message} from 'antd'
 import 'font-awesome/less/font-awesome.less';
 import 'react-fontawesome';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
@@ -36,8 +36,8 @@ class Battle extends Component {
     }
 
     doSearch = (player) => {
-        let {player1, player2} = this.state
-        if (player == 'player1') {
+        let {player1, player2, isPlayerOneLoading, isPlayerTwoLoading} = this.state
+        if (player == 'player1' && player1 && !isPlayerOneLoading) {
             this.setState({isPlayerOneLoading: true}, () => {
                 axios.get(`https://api.github.com/users/${player1}`).then(res => {
                     console.log(res)
@@ -46,9 +46,13 @@ class Battle extends Component {
                         isPlayerOneLoading: false,
                         isPlayerOneShowed: true
                     })
+                }).catch(err => {
+                    console.log(err)
+                    message.error('抱歉，这个找不到')
+                    this.setState({isPlayerOneLoading: false,player1: ''})
                 })
             })
-        } else if (player == 'player2') {
+        } else if (player == 'player2' && player2 && !isPlayerTwoLoading) {
             this.setState({isPlayerTwoLoading: true}, () => {
                 axios.get(`https://api.github.com/users/${player2}`).then(res => {
                     console.log(res)
@@ -57,6 +61,10 @@ class Battle extends Component {
                         isPlayerTwoLoading: false,
                         isPlayerTwoShowed: true
                     })
+                }).catch(err => {
+                    console.log(err)
+                    message.error('抱歉，这个找不到')
+                    this.setState({isPlayerTwoLoading: false,player2: ''})
                 })
             })
         }
@@ -73,7 +81,7 @@ class Battle extends Component {
 
     doBattle = (player1, player2, followers1, followers2) => {
         this.props.history.push({
-            pathname: `/result`,
+            pathname: `/result/?player1=${player1}&player2=${player2}`,
             state: {
                 player1, player2, followers1, followers2
             }
@@ -122,74 +130,80 @@ class Battle extends Component {
                         <div className={'battle-input-player-title'}>
                             Player One
                         </div>
-                        {
-                            !isPlayerOneShowed && !isPlayerOneLoading &&
-                            <div className={'battle-input-player-area'}>
-                                <input className={'input-item'} placeholder={'github username'}
-                                       type={"text"} ref={'input1'}
-                                       value={player1} onChange={this.handlePlayerChange.bind(this, 'player1')}/>
-                                <button onClick={this.doSearch.bind(this, 'player1')}
-                                        disabled={!player1}>
-                                    Submit
-                                </button>
-                            </div>
-                        }
-                        {
-                            isPlayerOneLoading &&
-                            <div className={'loading'}>
-                                loading......
-                            </div>
-                        }
-                        {
-                            isPlayerOneShowed &&
-                            <div className={'battle-input-result'}>
-                                <img className={'battle-input-result-image'} src={playerOneResult.avatar_url}/>
-                                <div className={'battle-input-result-name'}>
-                                    {playerOneResult.login}
+                        <form>
+                            {
+                                !isPlayerOneShowed && !isPlayerOneLoading &&
+                                <div className={'battle-input-player-area'}>
+                                    <input className={'input-item'} placeholder={'github username'}
+                                           type={"text"} ref={'input1'}
+                                           value={player1} onChange={this.handlePlayerChange.bind(this, 'player1')}
+                                           onSubmit={this.doSearch.bind(this, 'player1', true)}/>
+                                    <button onClick={this.doSearch.bind(this, 'player1')}
+                                            disabled={!player1}>
+                                        Submit
+                                    </button>
                                 </div>
-                                <div
-                                    className={'battle-input-result-clear'}
-                                    onClick={this.doClear.bind(this, 'player1')}>
-                                    X
+                            }
+                            {
+                                isPlayerOneLoading &&
+                                <div className={'loading'}>
+                                    loading......
                                 </div>
-                            </div>
-                        }
+                            }
+                            {
+                                isPlayerOneShowed &&
+                                <div className={'battle-input-result'}>
+                                    <img className={'battle-input-result-image'} src={playerOneResult.avatar_url}/>
+                                    <div className={'battle-input-result-name'}>
+                                        {playerOneResult.login}
+                                    </div>
+                                    <div
+                                        className={'battle-input-result-clear'}
+                                        onClick={this.doClear.bind(this, 'player1')}>
+                                        X
+                                    </div>
+                                </div>
+                            }
+                        </form>
                     </div>
                     <div className={'battle-input-player'}>
                         <div className={'battle-input-player-title'}>
                             Player Two
                         </div>
-                        {
-                            !isPlayerTwoShowed && !isPlayerTwoLoading &&
-                            <div className={'battle-input-player-area'}>
-                                <input className={'input-item'} placeholder={'github username'}
-                                       type={"text"} ref={'input2'}
-                                       value={player2} onChange={this.handlePlayerChange.bind(this, 'player2')}/>
-                                <button onClick={this.doSearch.bind(this, 'player2')}
-                                        disabled={!player2}>
-                                    Submit
-                                </button>
-                            </div>
-                        }
-                        {
-                            isPlayerTwoLoading &&
-                            <div className={'loading'}>
-                                loading......
-                            </div>
-                        }
-                        {
-                            isPlayerTwoShowed &&
-                            <div className={'battle-input-result'}>
-                                <img className={'battle-input-result-image'} src={playerTwoResult.avatar_url}/>
-                                <div className={'battle-input-result-name'}>
-                                    {playerTwoResult.login}
+                        <form>
+                            {
+                                !isPlayerTwoShowed && !isPlayerTwoLoading &&
+                                <div className={'battle-input-player-area'}>
+                                    <input className={'input-item'} placeholder={'github username'}
+                                           type={"text"} ref={'input2'}
+                                           value={player2} onChange={this.handlePlayerChange.bind(this, 'player2')}
+                                           onSubmit={this.doSearch.bind(this, 'player2')}/>
+                                    <button onClick={this.doSearch.bind(this, 'player2')}
+                                            disabled={!player2}>
+                                        Submit
+                                    </button>
                                 </div>
-                                <div className={'battle-input-result-clear'}
-                                     onClick={this.doClear.bind(this, 'player2')}>
-                                    X
+                            }
+                            {
+                                isPlayerTwoLoading &&
+                                <div className={'loading'}>
+                                    loading......
                                 </div>
-                            </div>
-                        }
+                            }
+                            {
+                                isPlayerTwoShowed &&
+                                <div className={'battle-input-result'}>
+                                    <img className={'battle-input-result-image'} src={playerTwoResult.avatar_url}/>
+                                    <div className={'battle-input-result-name'}>
+                                        {playerTwoResult.login}
+                                    </div>
+                                    <div className={'battle-input-result-clear'}
+                                         onClick={this.doClear.bind(this, 'player2')}>
+                                        X
+                                    </div>
+                                </div>
+                            }
+                        </form>
                     </div>
                 </div>
                 <div className={'battle-begin'}>

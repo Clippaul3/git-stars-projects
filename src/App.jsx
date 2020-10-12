@@ -6,30 +6,31 @@ import Popular from "./pages/popular";
 import Battle from "./pages/battle";
 import Result from "./pages/result";
 import {HashRouter as Router, Route, Redirect, Link, withRouter, Switch} from "react-router-dom";
+
 class App extends Component {
 
-    state = {
-
-    }
+    state = {}
 
     componentDidMount() {
 
     }
 
 
-
     render() {
         return (
-            <div className="git-app" >
+            <div className="git-app">
                 <Router>
                     <div className={'links'}>
                         <Link to={'/popular'} className={`navigate`}>Popular</Link>
                         <Link to={'/battle'} className={`navigate`}>Battle</Link>
                     </div>
                     <Redirect to={'/popular'}/>
-                    <Route path={'/popular'} component={Popular}/>
-                    <Route path={'/battle'} component={Battle}/>
-                    <Route path={'/result'} component={Result}/>
+                    <Switch>
+                        <Route path={'/popular'} component={Popular}/>
+                        <Route path={'/battle'} component={Battle}/>
+                        <Route path={'/result'} component={Result}/>
+                    </Switch>
+
                 </Router>
             </div>
         )

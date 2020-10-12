@@ -1,6 +1,8 @@
 .git-stars {
   overflow: hidden;
-  width: 100%;
+  width: 1200px;
+  max-width: 100%;
+  margin: 0 auto;
 
   &-languages {
     width: 20%;
@@ -24,7 +26,7 @@
     align-content: center;
     justify-content: space-between;
     flex-wrap: wrap;
-    padding: 0 50px;
+    //padding: 0 50px;
   }
 
   &-logo {
@@ -79,5 +81,11 @@
   .spin-container{
     width: 100%;
     text-align: center;
+  }
+  .switch-container{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
