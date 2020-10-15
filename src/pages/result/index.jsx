@@ -98,7 +98,7 @@ class Result extends Component {
                                 <FontAwesomeIcon className={'wrong-page-icon'} icon={faWindowClose}/>
                             </div>
                             <div className={'wrong-page-content'}>
-                                参数错误，请<a onClick={this.doReset.bind(this)}>返回</a>
+                                参数错误，请<a onClick={this.doReset.bind(this)}>返回重试</a>
                             </div>
                         </div>:
                         <div className="result">
