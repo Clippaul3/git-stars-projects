@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './index.scss';
 import axios from 'axios'
-import {Spin, Alert, Input,message} from 'antd'
+import {Spin, Alert, Input, message} from 'antd'
 import 'font-awesome/less/font-awesome.less';
 import 'react-fontawesome';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
@@ -49,7 +49,7 @@ class Battle extends Component {
                 }).catch(err => {
                     console.log(err)
                     message.error('抱歉，这个找不到')
-                    this.setState({isPlayerOneLoading: false,player1: ''})
+                    this.setState({isPlayerOneLoading: false, player1: ''})
                 })
             })
         } else if (player == 'player2' && player2 && !isPlayerTwoLoading) {
@@ -64,7 +64,7 @@ class Battle extends Component {
                 }).catch(err => {
                     console.log(err)
                     message.error('抱歉，这个找不到')
-                    this.setState({isPlayerTwoLoading: false,player2: ''})
+                    this.setState({isPlayerTwoLoading: false, player2: ''})
                 })
             })
         }
@@ -80,11 +80,17 @@ class Battle extends Component {
     }
 
     doBattle = (player1, player2, followers1, followers2) => {
+        let storage = window.localStorage
+        storage.player1 = player1
+        storage.player2 = player2
+        storage.followers1 = followers1
+        storage.followers2 = followers2
         this.props.history.push({
-            pathname: `/result/?player1=${player1}&player2=${player2}`,
+            pathname: `/result`,
             state: {
                 player1, player2, followers1, followers2
-            }
+            },
+            search:`?player1=${player1}&player2=${player2}`
         })
     }
 

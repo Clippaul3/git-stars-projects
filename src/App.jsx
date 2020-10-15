@@ -21,12 +21,12 @@ class App extends Component {
             <div className="git-app">
                 <Router>
                     <div className={'links'}>
-                        <Link to={'/popular'} className={`navigate`}>Popular</Link>
+                        <Link to={'/'} className={`navigate`}>Popular</Link>
                         <Link to={'/battle'} className={`navigate`}>Battle</Link>
                     </div>
-                    <Redirect to={'/popular'}/>
+                    {/*<Redirect to={'/popular'}/>*/}
                     <Switch>
-                        <Route path={'/popular'} component={Popular}/>
+                        <Route path={'/'} component={Popular}/>
                         <Route path={'/battle'} component={Battle}/>
                         <Route path={'/result'} component={Result}/>
                     </Switch>

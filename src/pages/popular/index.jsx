@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import './index.scss';
+import LanguageLinnk from "../../components/language-link";
 import axios from 'axios'
 import {Spin, Alert} from 'antd'
 import 'font-awesome/less/font-awesome.less';
@@ -17,14 +18,17 @@ class Popular extends Component {
     }
 
     componentDidMount() {
+        console.log('普罗普山',this.props)
         this.refs.isReachBottom.addEventListener('mousewheel', this.handle.bind(this))
         this.loadData()
     }
 
+    componentDidCatch(error, errorInfo) {
+        console.log('错啦');
+        console.log(errorInfo,error)
+    }
+
     handle = () => {
-        console.log("数据的高", this.refs.isReachBottom.clientHeight);
-        console.log("滚动的高", document.documentElement.scrollTop);
-        console.log("屏幕的高", document.documentElement.clientHeight);
         let {page, isLoading} = this.state
         let onPullUpHeight = this.refs.isReachBottom.clientHeight;
         let documentHeight = document.documentElement.clientHeight;
@@ -39,7 +43,8 @@ class Popular extends Component {
 
 
     loadData = () => {
-        let {language, page} = this.state
+        let { page} = this.state
+        let {language} = window.localStorage
         this.setState({isLoading: true}, () => {
             axios.get(
                 `https://api.github.com/search/repositories?q=stars:%3E1+language:${language}&sort=stars&order=desc&type=Repositories&page=${page}`
@@ -51,6 +56,11 @@ class Popular extends Component {
                     let moreProjects = this.state.projects.concat(res.data.items)
                     this.setState({projects: moreProjects, isLoading: false,isSwitching:false})
                 }
+            }).catch(err=>{
+                console.log(err)
+                return (
+                    <Alert message={'页面发生错误，请刷新'} type={"error"} showIcon/>
+                )
             })
         })
     }
@@ -71,32 +81,7 @@ class Popular extends Component {
                         <Spin spinning={isLoading} size={"large"} tip={'加载中...'}/>
                     </div>
                 }
-                <div className={'git-stars-languages'}>
-                    <div className={`git-stars-languages-item ${language == '' && 'active'}`}
-                         onClick={this.switchLanguage.bind(this, '')}>
-                        All
-                    </div>
-                    <div className={`git-stars-languages-item ${language == 'javascript' && 'active'}`}
-                         onClick={this.switchLanguage.bind(this, 'javascript')}>
-                        javascript
-                    </div>
-                    <div className={`git-stars-languages-item ${language == 'ruby' && 'active'}`}
-                         onClick={this.switchLanguage.bind(this, 'ruby')}>
-                        ruby
-                    </div>
-                    <div className={`git-stars-languages-item ${language == 'java' && 'active'}`}
-                         onClick={this.switchLanguage.bind(this, 'java')}>
-                        java
-                    </div>
-                    <div className={`git-stars-languages-item ${language == 'css' && 'active'}`}
-                         onClick={this.switchLanguage.bind(this, 'css')}>
-                        css
-                    </div>
-                    <div className={`git-stars-languages-item ${language == 'python' && 'active'}`}
-                         onClick={this.switchLanguage.bind(this, 'python')}>
-                        python
-                    </div>
-                </div>
+                <LanguageLinnk onChange={this.switchLanguage.bind(this)}/>
                 <div className={'git-stars-body'}>
                     {
                         projects.map((project, index) => (

@@ -19,8 +19,9 @@ class Result extends Component {
 
     componentDidMount() {
         console.log('哎', this)
-        if (this.props.history.location.state) {
-            let {player1, player2, followers1, followers2} = this.props.history.location.state
+        let {player1} = window.localStorage
+        if (this.props.history.location.state || player1) {
+            let {player1, player2, followers1, followers2} = this.props.history.location.state || window.localStorage
             if (followers1 >= followers2) {
                 axios.get(`https://api.github.com/users/${player1}`).then(res => {
                     console.log(res)
