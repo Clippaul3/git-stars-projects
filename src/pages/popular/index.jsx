@@ -44,8 +44,8 @@ class Popular extends Component {
 
     loadData = () => {
         let {page} = this.state
-        let {language} = window.localStorage
-
+        // let {language} = window.localStorage
+        let language = this.props.location.search.split('=')[1]
         this.setState({isLoading: true}, () => {
             axios.get(
                 `https://api.github.com/search/repositories?q=stars:%3E1+language:${language}&sort=stars&order=desc&type=Repositories&page=${page}`

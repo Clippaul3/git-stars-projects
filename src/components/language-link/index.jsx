@@ -41,7 +41,9 @@ class LanguageLinnk extends Component {
 
     render() {
         let {projects, isLoading, isSwitching} = this.state
-        let {language} = window.localStorage
+        // let {language} = window.localStorage
+        console.log('行不行',this.props.location.search.split('=')[1]);
+        let language = this.props.location.search.split('=')[1]
         return (
             <div className="git-stars" ref={'isReachBottom'}>
                 <div className={'git-stars-languages'}>
