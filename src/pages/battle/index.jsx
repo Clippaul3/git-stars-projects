@@ -18,7 +18,11 @@ class Battle extends Component {
         isPlayerOneLoading: false,
         isPlayerTwoLoading: false,
         playerOneResult: {},
-        playerTwoResult: {}
+        playerTwoResult: {},
+        isButtonOneDisabled: true,
+        isButtonTwoDisabled: true,
+        playerOneNotFound: false,
+        playerTwoNotFound: false
     }
 
     componentDidMount() {
@@ -27,9 +31,19 @@ class Battle extends Component {
 
     handlePlayerChange = (player, e) => {
         if (player == 'player1') {
+            if (e.target.value) {
+                this.setState({isButtonOneDisabled: false})
+            } else {
+                this.setState({isButtonOneDisabled: true})
+            }
             this.refs.input1.value = e.target.value
             this.setState({[player]: e.target.value})
         } else if (player == 'player2') {
+            if (e.target.value) {
+                this.setState({isButtonTwoDisabled: false})
+            } else {
+                this.setState({isButtonTwoDisabled: true})
+            }
             this.refs.input2.value = e.target.value
             this.setState({[player]: e.target.value})
         }
@@ -44,12 +58,17 @@ class Battle extends Component {
                     this.setState({
                         playerOneResult: res.data,
                         isPlayerOneLoading: false,
-                        isPlayerOneShowed: true
+                        isPlayerOneShowed: true,
+                        playerOneNotFound: false
                     })
                 }).catch(err => {
                     console.log(err)
-                    message.error('抱歉，这个找不到')
-                    this.setState({isPlayerOneLoading: false, player1: ''})
+                    this.setState({
+                        isPlayerOneLoading: false,
+                        player1: '',
+                        isButtonOneDisabled: true,
+                        playerOneNotFound: true
+                    })
                 })
             })
         } else if (player == 'player2' && player2 && !isPlayerTwoLoading) {
@@ -59,23 +78,31 @@ class Battle extends Component {
                     this.setState({
                         playerTwoResult: res.data,
                         isPlayerTwoLoading: false,
-                        isPlayerTwoShowed: true
+                        isPlayerTwoShowed: true,
+                        playerTwoNotFound: false
                     })
                 }).catch(err => {
                     console.log(err)
-                    message.error('抱歉，这个找不到')
-                    this.setState({isPlayerTwoLoading: false, player2: ''})
+                    this.setState({
+                        isPlayerTwoLoading: false,
+                        player2: '',
+                        isButtonTwoDisabled: true,
+                        playerTwoNotFound: true
+                    })
                 })
             })
+        } else {
+            console.log('空 ')
+            message.error('空')
         }
     }
 
     doClear = (player) => {
         this.setState({[player]: ''})
         if (player == 'player1') {
-            this.setState({isPlayerOneShowed: false, playerOneResult: {}})
+            this.setState({isPlayerOneShowed: false, playerOneResult: {}, isButtonOneDisabled: true})
         } else if (player == 'player2') {
-            this.setState({isPlayerTwoShowed: false, playerTwoResult: {}})
+            this.setState({isPlayerTwoShowed: false, playerTwoResult: {}, isButtonTwoDisabled: true})
         }
     }
 
@@ -90,7 +117,7 @@ class Battle extends Component {
             state: {
                 player1, player2, followers1, followers2
             },
-            search:`?player1=${player1}&player2=${player2}`
+            search: `?player1=${player1}&player2=${player2}`
         })
     }
 
@@ -103,7 +130,11 @@ class Battle extends Component {
             isPlayerTwoLoading,
             isPlayerTwoShowed,
             playerOneResult,
-            playerTwoResult
+            playerTwoResult,
+            isButtonOneDisabled,
+            isButtonTwoDisabled,
+            playerOneNotFound,
+            playerTwoNotFound
         } = this.state
         console.log('res', playerOneResult)
         return (
@@ -140,15 +171,21 @@ class Battle extends Component {
                             {
                                 !isPlayerOneShowed && !isPlayerOneLoading &&
                                 <div className={'battle-input-player-area'}>
-                                    <input className={'input-item'} placeholder={'github username'}
+                                    <input className={`input-item ${playerOneNotFound && 'not-found-input'}`}
+                                           placeholder={'github username'}
                                            type={"text"} ref={'input1'}
                                            value={player1} onChange={this.handlePlayerChange.bind(this, 'player1')}
-                                           onSubmit={this.doSearch.bind(this, 'player1', true)}/>
+                                           onSubmit={this.doSearch.bind(this, 'player1')}/>
                                     <button onClick={this.doSearch.bind(this, 'player1')}
-                                            disabled={!player1}>
+                                            disabled={isButtonOneDisabled}
+                                            className={`submit ${isButtonOneDisabled ? 'disabled' : ''}`}>
                                         Submit
                                     </button>
                                 </div>
+                            }
+                            {
+                                (playerOneNotFound && !isPlayerOneLoading) &&
+                                <div className={'not-found'}>抱歉，无法找到该用户</div>
                             }
                             {
                                 isPlayerOneLoading &&
@@ -180,15 +217,21 @@ class Battle extends Component {
                             {
                                 !isPlayerTwoShowed && !isPlayerTwoLoading &&
                                 <div className={'battle-input-player-area'}>
-                                    <input className={'input-item'} placeholder={'github username'}
+                                    <input className={`input-item ${playerTwoNotFound && 'not-found-input'}`}
+                                           placeholder={'github username'}
                                            type={"text"} ref={'input2'}
                                            value={player2} onChange={this.handlePlayerChange.bind(this, 'player2')}
                                            onSubmit={this.doSearch.bind(this, 'player2')}/>
                                     <button onClick={this.doSearch.bind(this, 'player2')}
-                                            disabled={!player2}>
+                                            disabled={isButtonTwoDisabled}
+                                            className={`submit ${isButtonTwoDisabled ? 'disabled' : ''}`}>
                                         Submit
                                     </button>
                                 </div>
+                            }
+                            {
+                                (playerTwoNotFound && !isPlayerTwoLoading) &&
+                                <div className={'not-found'}>抱歉，无法找到该用户</div>
                             }
                             {
                                 isPlayerTwoLoading &&

@@ -81,4 +81,14 @@
     padding: 20px 0;
     line-height: 50px;
   }
+  .disabled{
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  .not-found{
+    color: red;
+  }
+  .not-found-input{
+    border: solid 1px red;
+  }
 }

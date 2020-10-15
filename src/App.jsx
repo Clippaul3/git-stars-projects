@@ -26,7 +26,7 @@ class App extends Component {
                     </div>
                     {/*<Redirect to={'/popular'}/>*/}
                     <Switch>
-                        <Route path={'/'} component={Popular}/>
+                        <Route exact path={'/'} component={Popular}/>
                         <Route path={'/battle'} component={Battle}/>
                         <Route path={'/result'} component={Result}/>
                     </Switch>
