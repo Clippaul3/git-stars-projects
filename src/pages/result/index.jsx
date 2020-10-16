@@ -11,8 +11,8 @@ import {faFighterJet, faTrophy, faUsers} from '@fortawesome/free-solid-svg-icons
 class Result extends Component {
 
     state = {
-        player1: '',
-        player2: '',
+        player1: undefined,
+        player2: undefined,
         winner: {},
         loser: {},
         isWrongPlayer: false
@@ -22,12 +22,7 @@ class Result extends Component {
         console.log('哎', this.props.location.search.split('?')[1].split('&'))
         let params = this.props.location.search.split('?')[1].split('&')
         if (params.length < 2) {
-            this.setState({isWrongPlayer: true}, () => {
-                window.localStorage.removeItem('player1')
-                window.localStorage.removeItem('player2')
-                window.localStorage.removeItem('followers1')
-                window.localStorage.removeItem('followers2')
-            })
+            this.setState({isWrongPlayer: true})
         } else {
             this.setState({isWrongPlayer: false})
         }
@@ -37,36 +32,20 @@ class Result extends Component {
             players[param.split('=')[0]] = param.split('=')[1]
         })
         console.log('普雷厄斯', players)
-        let {player1} = window.localStorage
-        if (this.props.history.location.state || player1) {
-            let {player1, player2, followers1, followers2} = this.props.history.location.state || window.localStorage
-            if (followers1 >= followers2) {
-                axios.get(`https://api.github.com/users/${player1}`).then(res => {
-                    console.log(res)
-                    this.setState({
-                        winner: res.data
-                    })
+        let {player1,player2} = players
+        if (player1&&player2) {
+            axios.get(`https://api.github.com/users/${player1}`).then(res => {
+                console.log(res)
+                this.setState({
+                    player1: res.data
                 })
-                axios.get(`https://api.github.com/users/${player2}`).then(res => {
-                    console.log(res)
-                    this.setState({
-                        loser: res.data
-                    })
+            })
+            axios.get(`https://api.github.com/users/${player2}`).then(res => {
+                console.log(res)
+                this.setState({
+                    player2: res.data
                 })
-            } else {
-                axios.get(`https://api.github.com/users/${player1}`).then(res => {
-                    console.log(res)
-                    this.setState({
-                        loser: res.data
-                    })
-                })
-                axios.get(`https://api.github.com/users/${player2}`).then(res => {
-                    console.log(res)
-                    this.setState({
-                        winner: res.data
-                    })
-                })
-            }
+            })
         } else {
             this.props.history.push({
                 pathname: '/battle'
@@ -75,7 +54,7 @@ class Result extends Component {
     }
 
     doReset = () => {
-        this.setState({player1: '', player2: '', winner: {}, loser: {}}, () => {
+        this.setState({player1: {}, player2: {}, winner: {}, loser: {}}, () => {
             window.localStorage.removeItem('player1')
             window.localStorage.removeItem('player2')
             window.localStorage.removeItem('followers1')
@@ -85,7 +64,16 @@ class Result extends Component {
     }
 
     render() {
-        let {winner, loser,isWrongPlayer} = this.state
+        let {winner, loser,isWrongPlayer,player1,player2} = this.state
+        if(player1&&player2){
+            if(player1.followers >= player2.followers){
+                winner = player1
+                loser = player2
+            }else{
+                winner = player2
+                loser = player1
+            }
+        }
         console.log('winner', winner)
         console.log('loser', loser)
         console.log('荣恩普蕾尔',isWrongPlayer)
