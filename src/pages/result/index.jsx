@@ -70,13 +70,22 @@ class Result extends Component {
             if (player1.followers > player2.followers) {
                 winner = player1
                 loser = player2
-                this.setState({isEqual: false})
+                if(isEqual){
+                    this.setState({isEqual: false})
+                }
             } else if (player1.followers == player2.followers){
-                this.setState({isEqual: true})
+                winner = player1
+                loser = player2
+                if(!isEqual){
+                    this.setState({isEqual: true})
+                }
+                console.log('评')
             }else {
                 winner = player2
                 loser = player1
-                this.setState({isEqual: false})
+                if(isEqual){
+                    this.setState({isEqual: false})
+                }
             }
         }
         console.log('winner', winner)
