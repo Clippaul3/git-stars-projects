@@ -62,12 +62,13 @@ class Battle extends Component {
                         playerOneNotFound: false
                     })
                 }).catch(err => {
-                    console.log(err)
+                    console.log('艾热',err)
                     this.setState({
                         isPlayerOneLoading: false,
                         player1: '',
                         isButtonOneDisabled: true,
-                        playerOneNotFound: true
+                        playerOneNotFound: true,
+                        errMsg:err.message
                     })
                 })
             })
@@ -134,7 +135,8 @@ class Battle extends Component {
             isButtonOneDisabled,
             isButtonTwoDisabled,
             playerOneNotFound,
-            playerTwoNotFound
+            playerTwoNotFound,
+            errMsg
         } = this.state
         console.log('res', playerOneResult)
         return (
@@ -185,7 +187,7 @@ class Battle extends Component {
                             }
                             {
                                 (playerOneNotFound && !isPlayerOneLoading) &&
-                                <div className={'not-found'}>抱歉，无法找到该用户</div>
+                                <div className={'not-found'}>{errMsg}</div>
                             }
                             {
                                 isPlayerOneLoading &&
@@ -231,7 +233,7 @@ class Battle extends Component {
                             }
                             {
                                 (playerTwoNotFound && !isPlayerTwoLoading) &&
-                                <div className={'not-found'}>抱歉，无法找到该用户</div>
+                                <div className={'not-found'}>{errMsg}</div>
                             }
                             {
                                 isPlayerTwoLoading &&

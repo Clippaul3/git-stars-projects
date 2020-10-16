@@ -51,6 +51,7 @@ class Popular extends Component {
                 `https://api.github.com/search/repositories?q=stars:%3E1+language:${language}&sort=stars&order=desc&type=Repositories&page=${page}`
             ).then((res) => {
                 console.log('页面查询结果', res)
+                console.log('错误',res.message);
                 if (res.status != 200) {
                     this.setState({isLoading: false, isSwitching: false, isWrongPage: true})
                 } else {
@@ -75,7 +76,7 @@ class Popular extends Component {
                     this.refs.isReachBottom.addEventListener('mousewheel', this.handle.bind(this))
                 }
             }).catch(err => {
-                console.log('错误信息',err,typeof err.message)
+                console.log('错误信息',JSON.parse(JSON.stringify(err)),typeof err.message)
                 this.setState({isWrongPage: true,isLoading:false,isSwitching: false,errMsg:err.message})
             })
         })

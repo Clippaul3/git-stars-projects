@@ -15,7 +15,8 @@ class Result extends Component {
         player2: undefined,
         winner: {},
         loser: {},
-        isWrongPlayer: false
+        isWrongPlayer: false,
+        isEqual: false
     }
 
     componentDidMount() {
@@ -32,8 +33,8 @@ class Result extends Component {
             players[param.split('=')[0]] = param.split('=')[1]
         })
         console.log('普雷厄斯', players)
-        let {player1,player2} = players
-        if (player1&&player2) {
+        let {player1, player2} = players
+        if (player1 && player2) {
             axios.get(`https://api.github.com/users/${player1}`).then(res => {
                 console.log(res)
                 this.setState({
@@ -64,23 +65,27 @@ class Result extends Component {
     }
 
     render() {
-        let {winner, loser,isWrongPlayer,player1,player2} = this.state
-        if(player1&&player2){
-            if(player1.followers >= player2.followers){
+        let {winner, loser, isWrongPlayer, player1, player2, isEqual} = this.state
+        if (player1 && player2) {
+            if (player1.followers > player2.followers) {
                 winner = player1
                 loser = player2
-            }else{
+                this.setState({isEqual: false})
+            } else if (player1.followers == player2.followers){
+                this.setState({isEqual: true})
+            }else {
                 winner = player2
                 loser = player1
+                this.setState({isEqual: false})
             }
         }
         console.log('winner', winner)
         console.log('loser', loser)
-        console.log('荣恩普蕾尔',isWrongPlayer)
+        console.log('荣恩普蕾尔', isWrongPlayer)
         return (
             <div>
                 {
-                    isWrongPlayer?
+                    isWrongPlayer ?
                         <div className={'wrong-page'}>
                             <div>
                                 <FontAwesomeIcon className={'wrong-page-icon'} icon={faWindowClose}/>
@@ -88,12 +93,12 @@ class Result extends Component {
                             <div className={'wrong-page-content'}>
                                 参数错误，请<a onClick={this.doReset.bind(this)}>返回重试</a>
                             </div>
-                        </div>:
+                        </div> :
                         <div className="result">
                             <div className={'result-players'}>
                                 <div className={'result-player'}>
                                     <div className={'result-player-title'}>
-                                        Winner
+                                        {isEqual ? 'Equal' : 'Winner'}
                                     </div>
                                     <div className={'result-player-avatar'}>
                                         {
@@ -107,12 +112,12 @@ class Result extends Component {
                                         }
                                     </div>
                                     <div className={'result-player-score'}>
-                                        score:1
+                                        followers:{winner.followers}
                                     </div>
                                 </div>
                                 <div className={'result-player'}>
                                     <div className={'result-player-title'}>
-                                        Loser
+                                        {isEqual ? 'Equal' : 'Loser'}
                                     </div>
                                     <div className={'result-player-avatar'}>
                                         {
@@ -126,7 +131,7 @@ class Result extends Component {
                                         }
                                     </div>
                                     <div className={'result-player-score'}>
-                                        score:0
+                                        followers:{loser.followers}
                                     </div>
                                 </div>
                             </div>
